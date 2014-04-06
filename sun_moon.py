@@ -1,10 +1,11 @@
 #!/Users/cklein/anaconda/bin/python
 import matplotlib 
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 from os import system
 import ephem
 import operator
+import sys
 
 from scipy import *
 import pylab
@@ -16,14 +17,32 @@ from numpy import pi, arctan2, sin, cos, arcsin
 
 # system("wget http://sv.berkeley.edu:/view/images/newview.jpg .")
 
-system("/usr/bin/CoreLocationCLI -once > /tmp/location.txt")
-system("/usr/bin/CoreLocationCLI -once > /tmp/location.txt")
-system("/usr/bin/CoreLocationCLI -once > /tmp/location.txt")
+# system("/usr/bin/CoreLocationCLI -once > /tmp/location.txt")
+# system("/usr/bin/CoreLocationCLI -once > /tmp/location.txt")
+# system("/usr/bin/CoreLocationCLI -once > /tmp/location.txt")
+
+# location_file = file("/tmp/location.txt", "r")
+# line = location_file.readline()
+# location_file.close()
+# latitude = line.split("<")[1].split(",")[0].strip("+")
+# longitude = line.split(">")[0].split(",")[1]
+
+
+system("/Users/cklein/Desktop/Personal/Misc_Other/whereami > /tmp/location.txt")
 location_file = file("/tmp/location.txt", "r")
-line = location_file.readline()
+first_line = location_file.readline()
+if first_line.rstrip() == 'Wi-Fi is not enabled. Please enable it to gather location data':
+    location_file.close()
+    print "Wi-Fi is not enabled."
+    print "Wi-Fi necessary for"
+    print "location data."
+    system("cp /Users/cklein/Desktop/Personal/Misc_Other/gps_failure_cartoon.jpg /Users/cklein/Desktop/Personal/Misc_Other/map.jpg")
+    system("cp /Users/cklein/Desktop/Personal/Misc_Other/globe_with_question_mark.jpg /Users/cklein/Desktop/Personal/Misc_Other/wide_map.jpg")
+    sys.exit()
+    
+latitude = first_line.split()[1]
+longitude = location_file.readline().split()[1]
 location_file.close()
-latitude = line.split("<")[1].split(",")[0].strip("+")
-longitude = line.split(">")[0].split(",")[1]
 
 observatory = ephem.Observer()
 observatory.long = longitude
@@ -469,7 +488,7 @@ ax.set_yticks([])
 ax.tick_params(axis='x', labelbottom=False, labeltop=False)
 ax.tick_params(axis='y', labelleft=False, labelright=False)
 
-ax.patch.set_facecolor('None')
+# ax.patch.set_facecolor('none')
 
 axis('off')
 # fig.set_facecolor("#000000")
@@ -479,4 +498,6 @@ axis('off')
 
 
 savefig("/Users/cklein/Desktop/Personal/Misc_Other/starmap.pdf", transparent=True)
+# savefig("/Users/cklein/Desktop/Personal/Misc_Other/starmap.png", transparent=False, facecolor="k")
+
 close("all")
